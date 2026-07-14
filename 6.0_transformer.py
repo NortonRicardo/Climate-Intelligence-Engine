@@ -841,7 +841,6 @@ def main(only: str | None = None, config_filter: str | None = None) -> None:
           f" = {len(variables)*len(configs)} runs  (sequencial)\n")
 
     RESULTS_6.mkdir(parents=True, exist_ok=True)
-    failed: list[str] = []
 
     for variable in variables:
         for config_name in configs:
@@ -887,11 +886,8 @@ def main(only: str | None = None, config_filter: str | None = None) -> None:
             if result.returncode == 0:
                 print(f"  [OK  ] {tag}", flush=True)
             else:
-                print(f"  [ERRO] {tag}  exit={result.returncode}", flush=True)
-                failed.append(tag)
-
-    if failed:
-        print(f"\nRuns com falha: {failed}", flush=True)
+                print(f"  [ERRO] {tag}  exit={result.returncode} — abortando treino.", flush=True)
+                sys.exit(1)
 
     _aggregate_summary()
 
