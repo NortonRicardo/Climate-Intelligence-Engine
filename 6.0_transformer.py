@@ -845,6 +845,12 @@ def main(only: str | None = None, config_filter: str | None = None) -> None:
 
     for variable in variables:
         for config_name in configs:
+            # Pula runs que já concluíram — permite retomar após queda de energia
+            # sem re-treinar o que já está pronto.
+            if (RESULTS_6 / config_name / variable / "metrics.csv").exists():
+                print(f"  [SKIP] {variable}/{config_name}  — metrics.csv já existe")
+                continue
+
             # Porta nova a cada run: garante que dois torchrun consecutivos
             # não colidam no rendezvous mesmo que o OS demore a liberar a porta.
             port = _find_free_port()
